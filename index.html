@@ -2,7 +2,7 @@
 <html lang="en-us">
 <head>
   <meta charset="UTF-8">
-  <title>Train SchedulerEmployee Data Management</title>
+  <title>Train Scheduler</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -43,31 +43,28 @@
     </div>
     <!-- Search Form -->
     <div class="row" id="trainsRow">
-      <div class="col-md-12" id="employeeCol"> 
+      <div class="col-md-12" id="trainCol"> 
         <div class="panel panel-default" id="trainPanel">          
                 
           <div class="panel-heading" id="trainPanelHeader">Current trains</div>
             
             
-          <div class="panel-body">
-          `<table class="table" id="employeeTable">
+          <div class="panel-body" id="trainPanelBody">
+          `<table class="table table-striped" id="trainTable">
              <thead>
-                <tr>
-              <th>Train Name</th>
-              <th>Destination</th>
-              <th>Frequency (min)</th>
-              <th>Next Arrival</th>
-              <th>Minutes Away</th>
+                <tr>  
+              <th class="col-train-name">Train Name</th>
+              <th class="col-destination">Destination</th>
+              <th class="col-start-time">Start Time</th>
+              <th class="col-frequency">Frequency (min)</th>
+              <th class="col-next-arrival">Next Arrival</th>
+              <th class="col-minutes-away">Minutes Away</th>
+              <th class="col-row-key">Row Key</th>
+              <th></th>
+               <th></th>  
               </tr>
           </thead>
-  <tbody >
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+  <tbody id="tableBody" >
   </tbody>
 </table>
   
@@ -110,8 +107,86 @@
       </div>
     </div>
   </div>
-  
-  <style>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEditForm" tabindex="-1" role="dialog" 
+     aria-labelledby="Edit Train Info" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close" 
+                   data-dismiss="modal">
+                       <span aria-hidden="true">&times;</span>
+                       <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="modalTitle">
+                    Edit Train Info
+                </h4>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+                
+              <form role="form">
+                <div class="form-group" id="modalRowKeyGroup">
+                    <label for="modalRowKey">Row Key</label>                
+                    <input type="text" class="form-control" id="modalRowKey">
+                </div>
+                <div class="form-group">
+                    <label for="TrainName">Train Name</label>                
+                    <input type="text" class="form-control" id="modalTrainName">
+                </div>
+                <div class="form-group">
+                  <label for="Destination">Destination</label>                
+                  <input type="text" class="form-control" id="modalDestination">
+                </div>
+                <div class="form-group">
+                  <label for="startTime">Train Start Time (HH:mm - military time)</label>                
+                  <input type="text" class="form-control" id="modalStartTime">
+                </div>
+                <div class="form-group">
+                  <label for="Frequency">Frequency</label>                
+                  <input type="text" class="form-control" id="modalFrequency">
+                </div>
+                </form>
+                
+                
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">
+                            Close
+                </button>
+                <button type="button" class="btn btn-primary save-button">
+                    Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="loginmodal-container">
+          <h1>Login to Your Account</h1><br>
+          <form>
+              <input type="email" name="email" placeholder="Email Address">
+              <input type="password" name="pass" placeholder="Password">
+              <input type="submit" name="login" class="login loginmodal-submit" value="Login">
+          </form>
+          
+          <div class="login-help">
+          <a href="#">Register</a> - <a href="#">Forgot Password</a>
+          </div>
+        </div>
+      </div>
+ </div>   -->
+</div>
+
+ <style>
 /*@font-face{ 
   font-family: 'Railway';
   src: url('fonts/Railway-webfont.woff') format('woff');      
@@ -140,8 +215,121 @@ body {
       font-size: 16px;
       font-weight: bold;
     }
-    
-  </style>
+
+    .col-next-arrival, .col-minutes-away,.col-frequency {
+       text-align: center;
+    }
+
+  #trainPanelBody {
+    padding-top: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 0px;
+  }
+
+#trainTable th:nth-child(3), 
+#trainTable td:nth-child(3),
+#trainTable th:nth-child(7), 
+#trainTable td:nth-child(7) {
+  display: none;
+}
+
+#modalRowKeyGroup {
+  display: none;
+}
+
+/*/****** LOGIN MODAL ******/
+/*/*.loginmodal-container {
+  padding: 30px;
+  max-width: 350px;
+  width: 100% !important;
+  background-color: #F7F7F7;
+  margin: 0 auto;
+  border-radius: 2px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.loginmodal-container h1 {
+  text-align: center;
+  font-size: 1.8em;
+}
+
+.loginmodal-container input[type=submit] {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.loginmodal-container input[type=email], input[type=password] {
+  height: 44px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 10px;
+  -webkit-appearance: none;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-top: 1px solid #c0c0c0;
+  /* border-radius: 2px; */
+ /* padding: 0 8px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.loginmodal-container input[type=email]:hover, input[type=password]:hover {
+  border: 1px solid #b9b9b9;
+  border-top: 1px solid #a0a0a0;
+  -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.loginmodal {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  height: 36px;
+  padding: 0 8px;
+/* border-radius: 3px; */
+/* -webkit-user-select: none;
+  user-select: none; */
+}
+
+/*.loginmodal-submit {
+  /* border: 1px solid #3079ed; */
+  /*border: 0px;
+  color: #fff;
+  text-shadow: 0 1px rgba(0,0,0,0.1); 
+  background-color: #4d90fe;
+  padding: 17px 0px;
+  font-size: 14px;
+  /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */
+/*}
+
+.loginmodal-submit:hover {
+  /* border: 1px solid #2f5bb7; */
+ /* border: 0px;
+  text-shadow: 0 1px rgba(0,0,0,0.3);
+  background-color: #357ae8;
+   background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#357ae8)); 
+}
+
+.loginmodal-container a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 400;
+  text-align: center;
+  display: inline-block;
+  opacity: 0.6;
+  transition: opacity ease 0.5s;
+} */
+
+/*.login-help{
+  font-size: 12px;
+}*/
+/*/*/ 
+</style>
 
 <!-- <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script> -->
 
@@ -159,21 +347,23 @@ body {
   firebase.initializeApp(config);
 
   var database = firebase.database();
-
+  $("#login-modal").modal();
 
   //database.ref().clear();
   database.ref().on("child_added", function(childSnapshot) {
+
  var mmt = moment();
 
 // Your moment at midnight
-var mmtMidnight = mmt.clone().startOf('day');
+  var mmtMidnight = mmt.clone().startOf('day');
 
 // Difference in minutes
-var currMinutes = parseInt(mmt.diff(mmtMidnight, 'minutes'));
-var startMinutes= parseInt(moment.duration(childSnapshot.val().startTime,'hh:mm').as('minutes'));
-var minutesLapsed=currMinutes-startMinutes;
-var frequency=childSnapshot.val().frequency;
-var minutesAway =frequency - minutesLapsed%frequency;
+  var currMinutes = parseInt(mmt.diff(mmtMidnight, 'minutes'));
+  var startMinutes= parseInt(moment.duration(childSnapshot.val().startTime,'hh:mm').as('minutes'));
+  var minutesLapsed=currMinutes-startMinutes;
+  var frequency=childSnapshot.val().frequency;
+  var minutesAway =frequency - minutesLapsed%frequency;
+  var rowKey=childSnapshot.key;
   //var todayInMonths = d.getFullYear()*12 + d.getMonth() + 1;
   //var startDateArr = $("#startDate").val().split("/");
   //var startDateInMonths = startDateArr[0] * 12 + startDateArr[1];
@@ -186,41 +376,126 @@ var minutesAway =frequency - minutesLapsed%frequency;
   console.log("Current minutes:" + currMinutes);
   console.log("Minutes lapsed: " + minutesLapsed);
   console.log("Modulo: " + minutesLapsed%frequency);
+  console.log("Row Key: " + rowKey);
  
  
   console.log("Minutes away: " + minutesAway);
   var nextArrival = moment().add(minutesAway,'minutes').format("HH:mm");
   console.log(moment().format('HH:mm'));
   console.log("Next arrival:" + nextArrival);
-      // Log everything that's coming out of snapshot
+      // Log everything that's coming out of childSnapshot
 
-    
-
-      $("#employeeTable").append("<tr><td>" + childSnapshot.val().trainName 
-        + "<td>" + childSnapshot.val().destination + "</td>"
-        + "<td>" + childSnapshot.val().frequency + "</td>"
-        + "<td>" + nextArrival + "</td>"
-        + "<td>" + minutesAway + "</td>"
+      $("#trainTable").append("<tr><td class='col-train-name'>"+ childSnapshot.val().trainName +"</td>"
+        + "<td class='col-destination'>" + childSnapshot.val().destination + "</td>"
+        +"<td class='col-start-time'>" + childSnapshot.val().startTime + "</td>"
+        + "<td class='col-frequency'>" + childSnapshot.val().frequency + "</td>"
+        + "<td class='col-next-arrival'>" + nextArrival + "</td>"
+        + "<td class='col-minutes-away'>" + minutesAway + "</td>"
+        +"<td class='td-row-key'>" + rowKey + "</td>"
+        +"<td class='col-remove-button'><span><button class='btn btn-default btn-xs remove-button' type='button' aria-label='Delete Row'><span class='glyphicon glyphicon-remove'></span></span></button></td><td class='col-edit-button'><span><button class='btn btn-default btn-xs edit-button' type='button' data-toggle='modal' data-target='#modalEditForm' aria-label='Edit Row'><span class='glyphicon glyphicon-pencil'></span></span></button></td>"
         + " </tr>");
+
+      $(".remove-button").click(deleteRow);
+
+      $(".save-button").click(updateRow);
+
+      $("#modalEditForm").on("show.bs.modal",populateEditForm);
+
 
     // Handle the errors
     }, function(errorObject) {
       console.log("Errors handled: " + errorObject.code);
     });
 
+
+
+var refreshPage=function() {location.reload();};
+
+setInterval(refreshPage,60000);
+
 $("#submitButton").on("click", function(event) {
   event.preventDefault();
+  if ($("#trainName").val().trim() != '' && $("#destination").val().trim() != "" 
+        && $("#startTime").val() !='' && $("#frequency").val() !='')  {
+          
+          database.ref().push({
+              trainName: $("#trainName").val().trim(),
+              destination: $("#destination").val().trim(),
+              startTime: $("#startTime").val(),
+              frequency: parseInt($("#frequency").val())
+              });
 
-  database.ref().push({
-    trainName: $("#trainName").val().trim(),
-    destination: $("#destination").val().trim(),
-    startTime: $("#startTime").val(),
-    frequency: parseInt($("#frequency").val())
-  });
+    $("#trainName").val('');
+    $("#destination").val('');
+    $("#startTime").val('');
+    $("#frequency").val('');
+
+    refreshPage();
+
+     }
+
+ else
+     {
+      alert("Invalid entry. No input field can be blank.");
+     }    
+
 });
 
 
-  
+
+var deleteRow=function(event) {
+   event.stopPropagation();
+  var currRowKey=$(this).closest('tr').children('td.td-row-key').text();
+
+  console.log("CurrRowKey: " + currRowKey);
+
+  database.ref("/"+currRowKey).remove();
+  refreshPage();
+
+};
+
+var updateRow=function(event)  {
+ 
+  var currRowKey=$("#modalRowKey").val();
+  console.log("Update currRowKey: " + currRowKey)
+   if ($("#modalTrainName").val().trim() != '' && $("#modalDestination").val().trim() != "" 
+        && $("#modalStartTime").val() !='' && $("#modalFrequency").val() !='')  {
+
+        database.ref("/"+currRowKey).set({
+              trainName: $("#modalTrainName").val().trim(),
+              destination: $("#modalDestination").val().trim(),
+              startTime: $("#modalStartTime").val(),
+              frequency: parseInt($("#modalFrequency").val())
+          });
+
+    refreshPage();
+  }
+  else
+    {
+      alert("Invalid entry. All input fields must be populated.");
+    }
+};
+
+var populateEditForm=function(event) {
+   // event.preventDefault();
+  var currRowKey=$(event.relatedTarget).closest('tr').children('td.td-row-key').text();
+  var trainName=$(event.relatedTarget).closest('tr').children('td.col-train-name').text();
+  var destination=$(event.relatedTarget).closest('tr').children('td.col-destination').text();
+  var startTime=$(event.relatedTarget).closest('tr').children('td.col-start-time').text();
+  var frequency=$(event.relatedTarget).closest('tr').children('td.col-frequency').text();
+
+    $(this).find("#modalRowKey").val(currRowKey);
+    $(this).find("#modalTrainName").val(trainName);
+    $(this).find("#modalDestination").val(destination);
+    $(this).find("#modalStartTime").val(startTime);
+    $(this).find("#modalFrequency").val(frequency);
+   
+  // $(this).find("#modalTrainName").text=rowData.trainName.val();
+    // });
+
+};
+
+
   
   </script>
   </body>
